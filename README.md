@@ -1,90 +1,74 @@
-# ActiveCampaign Skill for Moltbot
+# ActiveCampaign CLI - Troubleshooting & Notes
 
-ActiveCampaign CRM integration for sales automation and pipeline management.
+## Account Limitations
 
-## Features
+ActiveCampaign **trial accounts** have limited API access:
 
-- **Contacts**: Create, sync, search, and tag leads
-- **Deals**: Manage sales pipeline stages
-- **Tags**: Segment and organize contacts
-- **Automations**: Trigger email sequences
-- **Custom Fields**: Comprehensive field mapping system for order, shipping, billing, and subscription data
-- **Lists**: Contact list management
+| Operation | Trial Account | Paid Account |
+|-----------|---------------|--------------|
+| Contact Read | ✅ Working | ✅ Working |
+| Contact Create/Update | ✅ Working | ✅ Working |
+| Deal Create | ❌ Blocked | ✅ Working |
+| Deal List | ✅ Working | ✅ Working |
+| Pipeline List | ❌ Blocked | ✅ Working |
+| Tag Add/Create | ❌ Blocked | ✅ Working |
+| Lists List | ❌ Blocked | ✅ Working |
 
-## Quick Setup
+**Workaround:** Use `deal_stage_list` to infer pipeline structure from stage IDs (stages include `pipeline` field).
 
-### 1. Credentials
+## Known API Issues
 
-```bash
-mkdir -p ~/.config/activecampaign
-echo "https://youraccount.api-us1.com" > ~/.config/activecampaign/url
-echo "your-api-key" > ~/.config/activecampaign/api_key
-```
+### contact_list Returns Empty
 
-### 2. Custom Fields (Optional)
+`contact_list` with `api_version=3` does not work for listing all contacts.
 
-```bash
-# Create field configuration from sample
-activecampaign config init
+**Fix:** The CLI now uses `contact_paginator` instead.
 
-# Edit with your ActiveCampaign field IDs
-nano ~/.config/activecampaign/fields.json
-```
+### JSON vs Form-Data
 
-**Note:** The `fields.json` file is gitignored and contains your private field IDs.
+Some endpoints require form-data format, not JSON:
+- `contact_add` - Works with form-data only
+- `contact_sync` - Works with form-data only
+- `deal_add` - Requires form-data with all fields
 
-## Usage
+### contact_tag_add Returns "Contact does not exist"
+
+This is an ActiveCampaign API quirk. The contact exists and can be read, but tagging via API may fail on trial accounts.
+
+### Pipeline & Deal Group List Blocked
+
+`pipeline_list` and `deal_group_list` return "You are not authorized" on trial accounts. Use `deal_stage_list` to see stages with their pipeline IDs.
+
+## Verified Working Endpoints
+
+### Contacts
+- `contact_paginator` - List contacts with pagination
+- `contact_view` - Get single contact by ID
+- `contact_add` - Create new contact (form-data)
+- `contact_sync` - Create or update contact (form-data)
+
+### Deals
+- `deal_list` - List deals
+- `deal_view` - Get single deal
+
+### Stages & Pipelines
+- `deal_stage_list` - List all stages (includes pipeline ID)
+
+### Tags
+- `tags_list` - List all tags
+
+## CLI Command Format
 
 ```bash
 # Contacts
-activecampaign contacts sync "email@clinic.com" "Dr." "Smith"
-activecampaign contacts add-tag <contact_id> <tag_id>
+activecampaign contacts list                    # List all contacts
+activecampaign contacts sync "email@test.com" "First" "Last"
+activecampaign contacts get <id>
 
 # Deals
-activecampaign deals list
-activecampaign deals create "Clinic Name" <stage_id> 5000
+activecampaign deals list                       # List deals
+activecampaign deals get <id>                   # Get deal details
 
-# Tags
-activecampaign tags list
-activecampaign tags create "Demo Requested"
-
-# Automations
-activecampaign automations list
-
-# Custom Fields
-activecampaign fields list
-activecampaign fields get order_fields.order_id
+# Stages
+activecampaign stages list                      # List pipeline stages
 ```
-
-## Field Configuration
-
-The skill includes comprehensive field mappings for:
-
-| Category | Examples |
-|----------|----------|
-| Order | Order ID, Number, Date, Total, Tax, Status, Currency, Payment |
-| Shipping | Name, Address, City, State, Postal Code, Country, Method, Cost |
-| Billing | Address, City, State, Postal Code, Country |
-| Subscription | ID, Status, Plan, Amount, Currency, Interval, Start, Trial End |
-
-See `activecampaign-fields-sample.json` for the complete field reference.
-
-## Installation
-
-Install via Moltbot's skill registry or clone directly:
-
-```bash
-git clone https://github.com/kesslerio/activecampaign-moltbot-skill.git
-cd activecampaign-moltbot-skill
-```
-
-## Integration
-
-This skill integrates with:
-- `shapescale-crm` - Attio CRM for source of truth
-- `shapescale-sales` - Sales qualification workflows
-- `campaign-orchestrator` - Multi-channel follow-up campaigns
-
-## License
-
-MIT

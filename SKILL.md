@@ -1,7 +1,7 @@
 ---
 name: activecampaign
 description: ActiveCampaign CRM integration for lead management, deal tracking, and email automation. Use for syncing demo leads, managing clinic sales pipeline, and triggering follow-up sequences.
-metadata: {"clawdbot":{"emoji":"📧","requires":{"bins":["activecampaign"],"env":["ACTIVECAMPAIGN_URL","ACTIVECAMPAIGN_API_KEY"]},"primaryEnv":["ACTIVECAMPAIGN_URL","ACTIVECAMPAIGN_API_KEY"]}}
+metadata: {"openclaw":{"emoji":"📧","requires":{"bins":["activecampaign"],"env":["ACTIVECAMPAIGN_URL","ACTIVECAMPAIGN_API_KEY"]},"primaryEnv":["ACTIVECAMPAIGN_URL","ACTIVECAMPAIGN_API_KEY"]}}
 ---
 
 # ActiveCampaign Skill 📧

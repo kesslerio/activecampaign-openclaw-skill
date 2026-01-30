@@ -94,11 +94,20 @@ ac_api() {
 
   local curl_args=(-X "$method" "-H" "Api-Token: $ACTIVECAMPAIGN_API_KEY" "-H" "Content-Type: application/json")
 
+  # Build URL with query parameters
+  local url="$BASE_URL?api_version=$API_VERSION&api_output=json&api_action=$endpoint"
+
   if [ -n "$data" ]; then
-    curl_args+=("-d" "$data")
+    if [ "$method" = "GET" ]; then
+      # Append as query parameters
+      url="$url&$data"
+    else
+      # POST with JSON body
+      curl_args+=("-d" "$data")
+    fi
   fi
 
-  curl -s "${curl_args[@]}" "$BASE_URL?api_version=$API_VERSION&api_output=json&api_action=$endpoint"
+  curl -s "${curl_args[@]}" "$url"
 }
 
 # Parse resource and action
@@ -110,8 +119,9 @@ case "$RESOURCE" in
   contacts)
     case "$ACTION" in
       list)
-        # List all contacts with pagination
-        ac_api GET "contact_list" "list=100&page=1"
+        # List all contacts with pagination (contact_paginator is the working v3 endpoint)
+        # Note: contact_list doesn't work with api_version=3 for listing all contacts
+        ac_api GET "contact_paginator" "limit=100&page=1"
         ;;
       create)
         local email="$1"
@@ -133,8 +143,9 @@ case "$RESOURCE" in
         ac_api GET "contact_view&id=$id"
         ;;
       search)
-        local query="$1"
-        ac_api GET "contact_list&query=$query"
+        query="$1"
+        # Use contact_paginator with email filter for searching
+        ac_api GET "contact_paginator" "filters%5Bemail%5D=$query"
         ;;
       add-tag)
         local contact_id="$1"
