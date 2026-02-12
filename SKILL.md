@@ -1,6 +1,6 @@
 ---
 name: activecampaign
-description: ActiveCampaign CRM integration for lead management, deal tracking, and email automation. Use for syncing demo leads, managing clinic sales pipeline, and triggering follow-up sequences.
+description: ActiveCampaign CRM integration for lead management, deal tracking, and email automation. Use when: 'ActiveCampaign', 'sync demo leads', 'manage clinic pipeline', 'trigger follow-up sequence', 'email automation', 'AC deals', 'AC contacts'. NOT for Dex personal CRM (use dex-openclaw-skill) or Attio CRM (use shapescale-crm or attio).
 metadata: {"openclaw":{"emoji":"📧","requires":{"bins":["activecampaign"],"env":["ACTIVECAMPAIGN_URL","ACTIVECAMPAIGN_API_KEY"]},"primaryEnv":["ACTIVECAMPAIGN_URL","ACTIVECAMPAIGN_API_KEY"]}}
 ---
 
