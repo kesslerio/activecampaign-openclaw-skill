@@ -1,5 +1,5 @@
 #!/bin/bash
-# ActiveCampaign CLI wrapper for Moltbot
+# ActiveCampaign CLI wrapper for OpenClaw
 # Usage: activecampaign <resource> <action> [args...]
 
 set -euo pipefail
