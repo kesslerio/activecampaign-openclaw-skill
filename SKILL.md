@@ -125,3 +125,10 @@ activecampaign fields set-field <contact_id> 7 "ORD-12345"
 - `shapescale-crm` - Attio CRM integration (source of truth)
 - `shapescale-sales` - Sales workflows and qualification
 - `campaign-orchestrator` - Multi-channel follow-up campaigns
+
+## When to Hand Off
+
+- If user needs campaign strategy and funnel planning (not just CRM execution): https://github.com/kesslerio/marketing-campaign-demandgen-skill
+- If user needs KPI/attribution analysis for automation performance: https://github.com/kesslerio/marketing-analytics-measurement-skill
+- If user needs reusable prompt systems for sequence copy generation: https://github.com/kesslerio/marketing-ai-prompting-skill
+- ASO requests are out of scope by design.
